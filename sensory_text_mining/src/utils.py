@@ -13,3 +13,13 @@ def counter_most_common_list_to_dict(counter_most_common_list:list[tuple], scale
         if scale == "square":
             item_dict[item] = count ** 1.5
     return item_dict
+
+def province_list(products):
+    """
+    从产品列表中提取所有出现的省份
+    """
+    province_set = set()
+    for product in products:
+        if product.get("province"):
+            province_set.add(product["province"])
+    return list(province_set)
