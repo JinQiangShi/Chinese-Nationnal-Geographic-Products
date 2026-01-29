@@ -1,33 +1,47 @@
 from math import nan
 from collections import Counter
+from .__init__ import CHINA_PROVINCES
 
-CHINA_PROVINCES = {
-    "北京市", "天津市", "上海市", "重庆市",
-    "河北省", "山西省", "辽宁省", "吉林省", "黑龙江省",
-    "江苏省", "浙江省", "安徽省", "福建省", "江西省",
-    "山东省", "河南省", "湖北省", "湖南省", "广东省",
-    "海南省", "四川省", "贵州省", "云南省", "陕西省",
-    "甘肃省", "青海省", "台湾省",
-    "内蒙古自治区", "广西壮族自治区", "西藏自治区",
-    "宁夏回族自治区", "新疆维吾尔自治区",
-    "香港特别行政区", "澳门特别行政区"
-}
-
-def product_count_province_level(products):
+def products_count_province_level(products):
     """
     统计产品在每个省份的出现次数
     """
-    return Counter(p["province"] for p in products if p.get("province")).most_common()
+    count = []
+    for product in products:
+        if product.get("province"):
+            count.append(product["province"])
+    return Counter(count).most_common()
 
-def product_count_city_level(products):
+def products_count_city_level(products):
     """
-    统计产品在每个的出现次数
+    统计产品在每个城市的出现次数
     """
-    return Counter(p["city"] for p in products if p.get("city")).most_common()
+    count = []
+    for product in products:
+        if product.get("city"):
+            count.append(product["city"])
+    return Counter(count).most_common()
 
-def name_count_provice_level(products, name):
+def product_name_NN_token_count(products):
     """
-    统计产品名称中包含指定名称的产品在每个省份的出现次数, 并补全不在products中的省份, 默认数量为0
+    统计产品名称分词后的普通名词NN出现的次数
+    """
+    tokens_count = []
+
+    for product in products:
+        nlp_dict = product['tokenized_product_name']
+        tok_list = nlp_dict['tok/fine']
+        pos_list = nlp_dict['pos/ctb']
+
+        for tok, pos in zip(tok_list, pos_list):
+            if pos == "NN":
+                tokens_count.append(tok)
+
+    return Counter(tokens_count).most_common()
+
+def name_in_product_name_count_provice_level(products, name):
+    """
+    统计产品名称中包含指定名称的产品在每个省份的出现次数, 并补全不在products中的省份, 默认为nan
     """
     # 统计产品名称中包含指定名称的产品在每个省份的出现次数
     name_count = Counter(p["province"] for p in products if name in p.get("product_name")).most_common()
@@ -37,15 +51,41 @@ def name_count_provice_level(products, name):
             name_count.append((province, nan))
     return name_count
 
-def product_name_list_province_level(products, province):
+def product_name_NN_token_count_province_level(products, province):
     """
-    返回指定省份的产品名称列表
+    统计产品名称分词后的普通名词NN在指定省份的出现次数
     """
-    return [p["product_name"] for p in products if province == p.get("province")]
+    tokens_count = []
 
-def product_name_list_city_level(products, city):
-    """
-    返回指定城市的产品名称列表
-    """
-    return [p["product_name"] for p in products if city == p.get("city")]
+    province_products = [p for p in products if province == p.get("province")]
 
+    for product in province_products:
+        nlp_dict = product['tokenized_product_name']
+        tok_list = nlp_dict['tok/fine']
+        pos_list = nlp_dict['pos/ctb']
+
+        for tok, pos in zip(tok_list, pos_list):
+            if pos == "NN":
+                tokens_count.append(tok)
+
+    return Counter(tokens_count).most_common()
+
+
+def product_name_NN_token_count_city_level(products, city):
+    """
+    统计产品名称分词后的普通名词NN在指定城市的出现次数
+    """
+    tokens_count = []
+
+    city_products = [p for p in products if city == p.get("city")]
+
+    for product in city_products:
+        nlp_dict = product['tokenized_product_name']
+        tok_list = nlp_dict['tok/fine']
+        pos_list = nlp_dict['pos/ctb']
+
+        for tok, pos in zip(tok_list, pos_list):
+            if pos == "NN":
+                tokens_count.append(tok)
+
+    return Counter(tokens_count).most_common()
