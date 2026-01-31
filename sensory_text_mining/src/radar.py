@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from count import SENSORY_DIMENSIONS
+from .count import SENSORY_DIMENSIONS
 
 def plot_sensory_radar_chart(normalized_data, selected_provinces, save_path):
     """
