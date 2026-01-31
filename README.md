@@ -36,7 +36,8 @@ Chinese-National-Geographic-Products/
 │   ├── src/                       # 源代码
 │   ├── figures/                   # 输出图表
 │   └── main.ipynb                 # 感官文本挖掘notebook
-├── README.md
+├── README.md                     # 项目介绍
+├── 技术报告.md                   # 项目技术报告
 └── LICENSE
 ```
 
